@@ -379,27 +379,36 @@ sub setup_handler {
 
 
         # location
-        my $state_from_dropdown = LJ::Lang::ml( 'states.head.defined' );
-        $post->{stateother} = "" if $post->{stateother} eq $state_from_dropdown;
-
         my %countries;
         DW::Countries->load( \%countries );
 
-        my $regions_cfg = LJ::Widget::Location->country_regions_cfg( $post->{country} );
-        if ( $regions_cfg && $post->{stateother} ) {
-            $errors->add( 'statedrop', 'widget.location.error.locale.country_ne_state' );
-        } elsif ( !$regions_cfg && $post->{statedrop} ) {
-            $errors->add( 'stateother', 'widget.location.error.locale.state_ne_country' );
-        }
-
+        # Validate the country selected
         if ( $post->{country} && ! defined $countries{$post->{country}} ) {
             $errors->add( 'country', 'widget.location.error.locale.invalid_country' );
         }
 
+        # If Javascript is enabled, and, if the country has regions, then 
+        #    post->statedrop will be used. This is a dropdown box.
+        # Else, post->stateother will be utilised. This is a text entry box.
+        
+#        if ( $regions_cfg && $post->{country} eq 'US' && $post->{stateother} ) {
+#            $errors->add( 'statedrop', 'widget.location.error.locale.country_ne_state' );
+#        } elsif ( !$regions_cfg && $post->{statedrop} ) {
+#            $errors->add( 'stateother', 'widget.location.error.locale.state_ne_country' );
+#        }
+
+        $post->{state} = $post->{statedrop} || $post->{stateother};
+        
         # check if specified country has states
+        my $regions_cfg = LJ::Widget::Location->country_regions_cfg( $post->{country} );
         if ( $regions_cfg ) {
-            # if it is - use region select dropbox
-            $post->{state} = $post->{statedrop};
+            # Check that the state provided is valid.
+            my $regions = LJ::Widget::Location->region_options( $regions_cfg );
+            # The region may have been added via text box and thus could be 
+            # specified as code or name.
+            unless ($regions->{ $post->{state} } || grep( /^$post->{state}$/i, values %$regions)) {
+                $errors->add( 'stateother', 'widget.location.error.locale.state_ne_country' );
+            }
 
             # mind save_region_code also
             unless ( $regions_cfg->{save_region_code} ) {
@@ -409,8 +418,7 @@ sub setup_handler {
                 $post->{state} = $regions_as_hash{$post->{state}};
             }
         } else {
-            # use state input box
-            $post->{state} = $post->{stateother};
+            
         }
 
 
