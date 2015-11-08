@@ -403,10 +403,10 @@ sub setup_handler {
         my $regions_cfg = LJ::Widget::Location->country_regions_cfg( $post->{country} );
         if ( $regions_cfg ) {
             # Check that the state provided is valid.
-            my $regions = LJ::Widget::Location->region_options( $regions_cfg );
+            my $regions = LJ::Widget::Location->country_regions( $regions_cfg );
             # The region may have been added via text box and thus could be 
             # specified as code or name.
-            unless ($regions->{ $post->{state} } || grep( /^$post->{state}$/i, values %$regions) {
+            unless ($regions->{ $post->{state} } || grep( /^$post->{state}$/i, values %$regions)) {
                 $errors->add( 'stateother', 'widget.location.error.locale.state_ne_country' );
             }
 
