@@ -85,7 +85,7 @@
     #             );
 
     # require new free acounts to be referred by an existing user?
-    $USE_ACCT_CODES = 1;
+    $USE_ACCT_CODES = 0;
 
     #$EVERYONE_VALID = 1; # are all users validated by default?
 
