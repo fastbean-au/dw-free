@@ -403,9 +403,9 @@ sub setup_handler {
             # specified as code or name, we need to detect which one when we 
             # verify.
             my $region_type_entry;
-            foreach my $code (values %$regions) {  
+            foreach my $code ( values %$regions ) {  
                 $region_type_entry = $post->{state} eq $code ? 'CODE' : $post->{state} eq $regions->{ $code } ? 'VALUE' : undef;
-                last if $region_tyoe_entry;
+                last if $region_type_entry;
             };
             
             unless ( $region_type_entry ) {
