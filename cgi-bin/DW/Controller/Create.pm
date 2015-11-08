@@ -391,12 +391,6 @@ sub setup_handler {
         #    post->statedrop will be used. This is a dropdown box.
         # Else, post->stateother will be utilised. This is a text entry box.
         
-#        if ( $regions_cfg && $post->{country} eq 'US' && $post->{stateother} ) {
-#            $errors->add( 'statedrop', 'widget.location.error.locale.country_ne_state' );
-#        } elsif ( !$regions_cfg && $post->{statedrop} ) {
-#            $errors->add( 'stateother', 'widget.location.error.locale.state_ne_country' );
-#        }
-
         $post->{state} = $post->{statedrop} || $post->{stateother};
         
         # check if specified country has states

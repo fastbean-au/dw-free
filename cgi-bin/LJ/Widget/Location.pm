@@ -287,10 +287,10 @@ sub country_regions {
     my $class = shift;
     my $country_region_cfg = shift;
 
-    my $regions = \();
-    LJ::load_codes ({$country_region_cfg->{'type'} => $regions});
+    my %regions = ();
+    LJ::load_codes ({$country_region_cfg->{'type'} => \%regions});
 
-    return $regions;
+    return \%regions;
 }
 
 1;
