@@ -403,7 +403,10 @@ sub setup_handler {
             # specified as code or name, we need to detect which one when we 
             # verify.
             my $region_type_entry;
-            map { $region_type_entry = $post->{state} eq $_ ? 'CODE' : $post->{state} eq $regions->{$_} ? 'VALUE' : undef } values %$regions;
+            foreach my $code (values %$regions) {  
+                $region_type_entry = $post->{state} eq $code ? 'CODE' : $post->{state} eq $regions->{ $code } ? 'VALUE' : undef;
+                last if $region_tyoe_entry;
+            };
             
             unless ( $region_type_entry ) {
                 $errors->add( $post->{stateother} ? 'stateother' : 'state', 'widget.location.error.locale.state_ne_country' );
