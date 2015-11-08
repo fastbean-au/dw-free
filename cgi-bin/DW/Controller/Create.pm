@@ -399,17 +399,21 @@ sub setup_handler {
             # Check that the state provided is valid.
             my $regions = LJ::Widget::Location->country_regions( $regions_cfg );
             # The region may have been added via text box and thus could be 
-            # specified as code or name.
-            unless ($regions->{ $post->{state} } || grep( /^$post->{state}$/i, values %$regions)) {
+            # specified as code or name, we need to detect which one when we 
+            # verify.
+            my $region_type_entry;
+            map { $region_type_entry = $post->{state} eq $_ ? 'CODE' : $post->{state} eq $regions->{$_} ? 'VALUE' : undef } values %$regions;
+            unless ( $region_type_entry ) {
                 $errors->add( 'stateother', 'widget.location.error.locale.state_ne_country' );
             }
 
             # mind save_region_code also
-            unless ( $regions_cfg->{save_region_code} ) {
+            if ( $regions_cfg->{save_region_code} && $region_type_entry eq 'VALUE' ) {
+                # save region code instead of name
+                ( $post->{state} ) = grep { $regions->{$_ } eq $post->{state} } keys %$regions;
+            } elsif ( !$regions_cfg->{save_region_code} && $region_type_entry eq 'CODE' ) {
                 # save region name instead of code
-                my $regions_arrayref = LJ::Widget::Location->region_options( $regions_cfg );
-                my %regions_as_hash = @$regions_arrayref;
-                $post->{state} = $regions_as_hash{$post->{state}};
+                $post->{state} = $regions->{ $post->{state} };
             }
         } else {
             
