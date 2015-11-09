@@ -404,12 +404,12 @@ sub setup_handler {
             # verify. Case insensitive.
             my $region_type_entry;
             foreach my $code ( keys %$regions ) {  
-                $region_type_entry = uc( $post->{state} ) =~ uc( $code ) ? 'CODE' : uc( $post->{state} ) eq uc( $regions->{ $code } )? 'VALUE' : undef;
+                $region_type_entry = uc( $post->{state} ) eq uc( $code ) ? 'CODE' : uc( $post->{state} ) eq uc( $regions->{ $code } )? 'VALUE' : undef;
                 last if $region_type_entry;
             };
             
             unless ( $region_type_entry ) {
-                $errors->add( $post->{stateother} ? 'stateother' : 'state', 'widget.location.error.locale.state_ne_country' );
+                $errors->add( $post->{stateother} ? 'stateother' : 'statedrop', 'widget.location.error.locale.state_ne_country' );
             }
 
             # mind save_region_code also
