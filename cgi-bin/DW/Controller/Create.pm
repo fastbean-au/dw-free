@@ -401,10 +401,10 @@ sub setup_handler {
             
             # The region may have been added via text box and thus could be 
             # specified as code or name, we need to detect which one when we 
-            # verify.
+            # verify. Case insensitive.
             my $region_type_entry;
-            foreach my $code ( values %$regions ) {  
-                $region_type_entry = $post->{state} eq $code ? 'CODE' : $post->{state} eq $regions->{ $code } ? 'VALUE' : undef;
+            foreach my $code ( keys %$regions ) {  
+                $region_type_entry = uc( $post->{state} ) =~ uc( $code ) ? 'CODE' : uc( $post->{state} ) eq uc( $regions->{ $code } )? 'VALUE' : undef;
                 last if $region_type_entry;
             };
             
